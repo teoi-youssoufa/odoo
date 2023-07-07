@@ -1,4 +1,4 @@
-name: Odoo CD
+name: Super-Linter Workflow
 
 on:
   push:
@@ -9,37 +9,21 @@ on:
       - main
 
 jobs:
-  build:
+  lint:
+    name: Run Super-Linter
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Build
-        run: |
-          # Add build commands here
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
+      - name: Install Super-Linter
+        run: npm install -g super-linter
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Test
-        run: |
-          # Add test commands here
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Deploy
-        run: |
-          # Add deployment commands here
+      - name: Run Super-Linter
+        run: super-linter
