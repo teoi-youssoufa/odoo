@@ -1,29 +1,35 @@
-name: Super-Linter Workflow
+name: Deploy Odoo
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  lint:
-    name: Run Super-Linter
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Install Docker
+        run: |
+          sudo apt update
+          sudo apt install -y docker.io
+
+      - name: Set up SSH keys
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 13.49.136.253 >> ~/.ssh/known_hosts
+
+      - name: Connect to EC2 instance
+        uses: appleboy/ssh-action@master
         with:
-          python-version: 3.x
-
-      - name: Install Super-Linter
-        run: npm install -g super-linter
-
-      - name: Run Super-Linter
-        run: super-linter
+          host: 13.49.136.253
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Run commands on the EC2 instance
+            docker run -d -p 8069:8069 --name odoo --restart always -v /opt/odoo/data:/var/lib/odoo -v /opt/odoo/config:/etc/odoo -e POSTGRES_PASSWORD=Teoi@682181942 -e OE_SUPERADMIN_PASSWORD=Teoi@682181942 --link db:db --network bridge --expose 8069 odoo:latest
