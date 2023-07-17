@@ -38,7 +38,7 @@ jobs:
         with:
           host: 13.49.136.253
           username: ubuntu
-          key: ${{ secrets.ec2 }}
+          key: ${{ secrets.instance }}
           script: |
             # Run commands on the EC2 instance
             docker run -d -p 8069:8069 --name odoo --restart always -v /opt/odoo/data:/var/lib/odoo -v /opt/odoo/config:/etc/odoo -e POSTGRES_PASSWORD=youssoufa -e OE_SUPERADMIN_PASSWORD=youssoufa --link db:db --network bridge --expose 8069 odoo:latest
