@@ -13,6 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create .ssh directory
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
       - name: Clean up conflicting packages
         run: |
           sudo apt remove -y moby-containerd moby-runc containerd runc
