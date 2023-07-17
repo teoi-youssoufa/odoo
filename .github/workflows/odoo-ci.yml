@@ -13,6 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Clean up conflicting packages
+        run: |
+          sudo apt remove -y moby-containerd moby-runc containerd runc
+
       - name: Install Docker
         run: |
           sudo apt update
@@ -32,4 +36,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Run commands on the EC2 instance
-            docker run -d -p 8069:8069 --name odoo --restart always -v /opt/odoo/data:/var/lib/odoo -v /opt/odoo/config:/etc/odoo -e POSTGRES_PASSWORD=Teoi@682181942 -e OE_SUPERADMIN_PASSWORD=Teoi@682181942 --link db:db --network bridge --expose 8069 odoo:latest
+            docker run -d -p 8069:8069 --name odoo --restart always -v /opt/odoo/data:/var/lib/odoo -v /opt/odoo/config:/etc/odoo -e POSTGRES_PASSWORD=youssoufa -e OE_SUPERADMIN_PASSWORD=youssoufa --link db:db --network bridge --expose 8069 odoo:latest
