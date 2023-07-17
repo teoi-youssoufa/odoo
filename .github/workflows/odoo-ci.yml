@@ -29,7 +29,7 @@ jobs:
 
       - name: Set up SSH keys
         run: |
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          echo "${{ secrets.INSTANCE_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 13.49.136.253 >> ~/.ssh/known_hosts
 
@@ -38,7 +38,7 @@ jobs:
         with:
           host: 13.49.136.253
           username: ubuntu
-          key: ${{ secrets.instance }}
+          key: ${{ secrets.INSTANCE_PRIVATE_KEY }}
           script: |
             # Run commands on the EC2 instance
             docker run -d -p 8069:8069 --name odoo --restart always -v /opt/odoo/data:/var/lib/odoo -v /opt/odoo/config:/etc/odoo -e POSTGRES_PASSWORD=youssoufa -e OE_SUPERADMIN_PASSWORD=youssoufa --link db:db --network bridge --expose 8069 odoo:latest
